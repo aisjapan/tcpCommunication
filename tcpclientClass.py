@@ -15,5 +15,5 @@ class tcpClient(socket.socket):
     def send(self,msg):
         self._client.send(msg)
 
-    def _recieve(self):
+    def recieve(self):
         return self._client.recv(4096)
