@@ -16,19 +16,19 @@ class tcpserver(socket.socket, threading.Thread):
         self._port = port
         self._maxClients = maxClients
 
-    def _server(self):
+    def __server(self):
         for i in range(self._maxClients):
             self._clientSock.append(self._serversock.accept())
             print(self._clientSock[i][1])
 
     def sendAll(self,msg):
-        for e in self._clienctSock:
+        for e in self._clientSock:
             e[0].sendall(msg.encode('utf-8'))
 
-    def _recieve(self):
+    def __recieve(self):
         while True:
             for e in self._clientSock:
-                rcvmsg = e[0].recv(1024)
+                rcvmsg = e[0].recv(4096)
                 self._recievedMsg.append(rcvmsg.decode('utf-8'))
 
     def getMsg(self):
