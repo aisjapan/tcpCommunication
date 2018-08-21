@@ -34,6 +34,8 @@ while True:
             robotinfo.append(aisprotocol.robotInfo(sender_ip,sender_color))
             robotIndex = len(robotinfo)-1
 
+        robotinfo[robotIndex].rawMsg = msg
+
         for e in datalist:
             if e[0] == "POSX":
                 robotinfo[robotIndex].posX = float(e[1])
@@ -46,5 +48,7 @@ while True:
 
         for e in robotinfo:
             print(e)
+        for e in robotinfo:
+            print(e.rawMsg)
 
         time.sleep(1)

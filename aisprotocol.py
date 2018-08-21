@@ -16,6 +16,7 @@ class robotInfo(object):
         self.state = "WAIT_CONN"
         self.color = color
         self.ip = ip
+        self.rawMsg = ''
 
     def __str__(self):
         return "IP:{0:10} | COLOR:{1:10} | STATE:{2:10}".format(self.ip,
