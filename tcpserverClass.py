@@ -17,7 +17,7 @@ class tcpserver(socket.socket, threading.Thread):
         self.__maxClients = maxClients
 
     def __server(self):
-        for i in range(self._maxClients):
+        for i in range(self.__maxClients):
             self.__clientSock.append(self.__serversock.accept())
             print(self.__clientSock[i][1])
 
