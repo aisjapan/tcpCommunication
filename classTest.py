@@ -6,8 +6,6 @@ import aisprotocol
 
 server = tcpserverClass.tcpserver()
 
-formatter = aisprotocol.aisProtocol("192.168.3.50","BLUE")
-
 robotinfo = []
 
 robotinfo.append(aisprotocol.robotInfo())
@@ -24,31 +22,21 @@ server.startServer()
 while True:
     status, msg = server.getMsg()
 
-    if status or True:
-        server.sendAll(msg)
-        msg = "192.168.3.51:YELLOW:POSX:1.000:POSY:3.21:STATE:RDY"
-        sender_ip,sender_color,datalist = formatter.decodeData(msg)
+    if status:
+        sender_ip,sender_color,datalist = aisprotocol.decodeData(msg)
 
         onTable,robotIndex = aisprotocol.isOnTable(sender_ip,robotinfo)
         if not onTable:
             robotinfo.append(aisprotocol.robotInfo(sender_ip,sender_color))
             robotIndex = len(robotinfo)-1
 
-        robotinfo[robotIndex].rawMsg = msg
+        if not robotinfo[robotIndex].rawMsg2obj(msg):
+            print("ERROR in processing data")
 
-        for e in datalist:
-            if e[0] == "POSX":
-                robotinfo[robotIndex].posX = float(e[1])
-            elif e[0] == "POSY":
-                robotinfo[robotIndex].posY = float(e[1])
-            elif e[0] == "STATE":
-                robotinfo[robotIndex].state = e[1]
-            else:
-                print("protocolError")
 
         for e in robotinfo:
             print(e)
         for e in robotinfo:
+            e.buildData()
             print(e.rawMsg)
-
-        time.sleep(1)
+            server.sendAll(e.rawMsg)

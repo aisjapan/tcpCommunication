@@ -22,8 +22,8 @@ class tcpserver(socket.socket, threading.Thread):
             print(self.__clientSock[i][1])
 
     def sendAll(self,msg):
-        for e in self.__clientSock:
-            e[0].sendall(msg.encode('utf-8'))
+        for client_socket, _ in self.__clientSock:
+            client_socket.sendall(msg.encode('utf-8'))
 
     def __recieve(self):
         while True:

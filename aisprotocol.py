@@ -6,9 +6,25 @@ def isOnTable(search_ip,robotinfo):
             return True, i
     return False, None
 
+def decodeData(data):
+    decode = data.split(":")
+    if len(decode) < 2:
+        print("ERROR:wrong protocol")
+        print(decode)
+    ip = decode[0]
+    color = decode[1]
+    decode.pop(0)
+    decode.pop(0)
+    i = 0
+    datalist = []
+    while i*2+1 < len(decode):
+        #一次元のデータを二次元に
+        datalist.append((decode[i*2],decode[i*2 + 1]))
+        i = i + 1
 
+    return ip, color, datalist
 
-class robotInfo(object):
+class robotInfo():
     """docstring for robotInfo."""
     def __init__(self,ip = "8.8.8.8",color = "BLACK"):
         self.posX = 0.0
@@ -17,45 +33,40 @@ class robotInfo(object):
         self.color = color
         self.ip = ip
         self.rawMsg = ''
-
-    def __str__(self):
-        return "IP:{0:10} | COLOR:{1:10} | STATE:{2:10}".format(self.ip,
-                                                                self.color,
-                                                                self.state)
-
-class aisProtocol():
-    """docstring for aisProtocol."""
-    def __init__(self,ip,color):
-        self.__ip = ip
-        self.__color = color
-        self.__sendingData = []
-
-    def addData(self,datatype,data):
-        self.__sendingData.extend([datatype,data])
+        self.msg = ''
 
     def buildData(self):
-        builtData = self.__ip + ":" +  self.__color
-        for e in self.__sendingData:
-            builtData = builtData + ":" + e
+        builtData = self.ip + ":" + \
+                    self.color + ":" + \
+                    "STATE:" + self.state + ":" + \
+                    "POSX:" + str(self.posX) + ":" + \
+                    "POSY:" + str(self.posY) + ":" + \
+                    "MSG:" + self.msg
+
+        self.rawMsg = builtData
         return builtData
 
-    def clearData(self):
-        self.__sendingData = []
+    def rawMsg2obj(self,msg):
+        ip, color, datalist = decodeData(msg)
+        if not ip == self.ip:
+            return False
 
-    def decodeData(self,data):
-        decode = data.split(":")
-        ip = decode[0]
-        color = decode[1]
-        decode.pop(0)
-        decode.pop(0)
-        i = 0
-        datalist = []
-        while i*2+1 < len(decode):
-            #一次元のデータを二次元に
-            datalist.append((decode[i*2],decode[i*2 + 1]))
-            i = i + 1
-
-        return ip, color, datalist
+        for dataType, data in datalist:
+            if dataType == "POSX":
+                self.posX = float(data)
+            elif dataType == "POSY":
+                self.posY = float(data)
+            elif dataType == "STATE":
+                self.state = data
+            elif dataType == "MSG":
+                self.msg = data
+            else:
+                print("protocolError")
+                return False
+        return True
 
     def __str__(self):
-        return self.buildData()
+        return "IP:{0:17} | COLOR:{1:10} | STATE:{2:10} | msg:{3:10}".format(self.ip,
+                                                                             self.color,
+                                                                             self.state,
+                                                                             self.msg)
