@@ -11,6 +11,7 @@ def decodeData(data):
     if len(decode) < 2:
         print("ERROR:wrong protocol")
         print(decode)
+        return '', '', ''
     ip = decode[0]
     color = decode[1]
     decode.pop(0)
@@ -27,20 +28,20 @@ def decodeData(data):
 class robotInfo():
     """docstring for robotInfo."""
     def __init__(self,ip = "8.8.8.8",color = "BLACK"):
-        self.posX = 0.0
-        self.posY = 0.0
+        self.angle = 0.0
+        self.distance = 0.0
         self.state = "WAIT_CONN"
         self.color = color
         self.ip = ip
         self.rawMsg = ''
-        self.msg = ''
+        self.msg = ' '
 
     def buildData(self):
         builtData = self.ip + ":" + \
                     self.color + ":" + \
                     "STATE:" + self.state + ":" + \
-                    "POSX:" + str(self.posX) + ":" + \
-                    "POSY:" + str(self.posY) + ":" + \
+                    "ANGLE:" + str(self.angle) + ":" + \
+                    "DIST:" + str(self.distance) + ":" + \
                     "MSG:" + self.msg
 
         self.rawMsg = builtData
@@ -48,20 +49,20 @@ class robotInfo():
 
     def rawMsg2obj(self,msg):
         ip, color, datalist = decodeData(msg)
-        if not ip == self.ip:
+        if not ip == self.ip and color == self.color:
             return False
 
         for dataType, data in datalist:
-            if dataType == "POSX":
-                self.posX = float(data)
-            elif dataType == "POSY":
-                self.posY = float(data)
+            if dataType == "ANGLE":
+                self.angle = float(data)
+            elif dataType == "DIST":
+                self.distance = float(data)
             elif dataType == "STATE":
                 self.state = data
             elif dataType == "MSG":
                 self.msg = data
             else:
-                print("protocolError")
+                print("protocolError" + dataType)
                 return False
         return True
 

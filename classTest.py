@@ -40,3 +40,4 @@ while True:
             e.buildData()
             print(e.rawMsg)
             server.sendAll(e.rawMsg)
+            time.sleep(0.001)
