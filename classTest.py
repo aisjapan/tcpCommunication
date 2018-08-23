@@ -21,6 +21,5 @@ while True:
         print(msg)
         if msg == 'READY':
             count = count + 1
-        if count == 3:
+        if count == 1:
             server.sendAll("START")
-            
