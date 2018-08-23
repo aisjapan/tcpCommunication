@@ -26,6 +26,7 @@ class tcpserver(socket.socket, threading.Thread):
         while True:
             rcvmsg = socketObject.recv(4096)
             self.__recievedMsg.append(rcvmsg.decode('utf-8'))
+            time.sleep(0.01)
 
     def __server(self):
         for i in range(self.__maxClients):
